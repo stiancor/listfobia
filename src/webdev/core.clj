@@ -14,11 +14,34 @@
 (defn goodbye [req] 
 		{:status 200 :body "Goodbye, Cruel World!" :headers {}})
 
+(defn yo [req]
+	(let [name (get-in req [:route-params :name])] 
+		{:status 200 
+		 :body (str "Yo " name "!")
+		 :headers {}}))
+
+(def operators
+	{"+" +
+	 "-" -
+	 "*" *
+	 ":" /})
+
+(defn calc [req]
+	(let [first (Integer. (get-in req [:route-params :first])) 
+	      second (Integer. (get-in req [:route-params :second]))
+	 	  operator (get-in req [:route-params :operator]) 
+	 	  f (get operators operator)]
+		{:status 200 
+		 :body (str (f first second))
+		 :headers {}}))
+
 (defroutes app
 	(GET "/" [] greet)
 	(GET "/about" [] about)
 	(GET "/goodbye" [] goodbye)
 	(GET "/request" [] handle-dump)
+	(GET "/yo/:name" [] yo)
+	(GET "/calc/:first/:operator/:second" [] calc)
 	(not-found "Page not found!"))
 
 (defn -main [port]
