@@ -27,13 +27,17 @@
 	 ":" /})
 
 (defn calc [req]
-	(let [first (Integer. (get-in req [:route-params :first])) 
-	      second (Integer. (get-in req [:route-params :second]))
+	(let [a (Integer. (get-in req [:route-params :a])) 
+	      b (Integer. (get-in req [:route-params :b]))
 	 	  operator (get-in req [:route-params :operator]) 
 	 	  f (get operators operator)]
-		{:status 200 
-		 :body (str (f first second))
-		 :headers {}}))
+	 	(if f 
+	 	  	{:status 200 
+		 	 :body (str (f a b))
+		 	 :headers {}}
+		 	{:status 404 
+		 	 :body (str "Unknown operator: " operator)
+		 	 :headers {}})))
 
 (defroutes app
 	(GET "/" [] greet)
@@ -41,7 +45,7 @@
 	(GET "/goodbye" [] goodbye)
 	(GET "/request" [] handle-dump)
 	(GET "/yo/:name" [] yo)
-	(GET "/calc/:first/:operator/:second" [] calc)
+	(GET "/calc/:a/:operator/:b" [] calc)
 	(not-found "Page not found!"))
 
 (defn -main [port]
